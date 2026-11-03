@@ -27,3 +27,16 @@ test("rejects incomplete events and invalid prices", () => {
   assert.equal(result.events.length, 1);
   assert.equal(result.odds.length, 1);
 });
+
+test("parses string suspension flags without treating false as true", () => {
+  const result = normalizeFeed({
+    events: [],
+    odds: [
+      { eventId: "e1", market: "total", selection: "over", odds: 1.8, suspended: "false" },
+      { eventId: "e1", market: "total", selection: "under", odds: 2.1, suspended: "true" }
+    ]
+  }, "fonbet");
+
+  assert.equal(result.odds[0].suspended, false);
+  assert.equal(result.odds[1].suspended, true);
+});
