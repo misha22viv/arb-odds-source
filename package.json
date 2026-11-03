@@ -1,0 +1,12 @@
+{
+  "name": "arb-odds-source",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Independent, feed-driven odds collection service for bookmaker data supplied through authorized feeds.",
+  "type": "module",
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  }
+}
