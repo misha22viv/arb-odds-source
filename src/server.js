@@ -16,7 +16,7 @@ const providers = [
 
 const store = new Store(dataDir, Number(env.MAX_HISTORY_ROWS || 100000));
 await store.init();
-const collector = new Collector({ providers, store, timeoutMs });
+const collector = new Collector({ providers, store, timeoutMs, staleAfterMs: intervalMs * 3 });
 const json = (res, status, body) => {
   res.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
