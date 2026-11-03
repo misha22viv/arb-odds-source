@@ -3,10 +3,11 @@ import { normalizeFeed } from "./normalize.js";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class Collector {
-  constructor({ providers, store, timeoutMs = 8000, onStatus = () => {} }) {
+  constructor({ providers, store, timeoutMs = 8000, staleAfterMs = 45000, onStatus = () => {} }) {
     this.providers = providers;
     this.store = store;
     this.timeoutMs = timeoutMs;
+    this.staleAfterMs = staleAfterMs;
     this.onStatus = onStatus;
     this.status = Object.fromEntries(providers.map((p) => [p.id, {
       provider: p.id,
@@ -21,7 +22,17 @@ export class Collector {
     this.running = false;
   }
 
-  getStatus() { return Object.values(this.status); }
+  getStatus() {
+    const now = Date.now();
+    return Object.values(this.status).map((status) => {
+      const result = { ...status };
+      if (result.state === "ok" && result.lastSuccessAt
+          && now - Date.parse(result.lastSuccessAt) > this.staleAfterMs) {
+        result.state = "stale";
+      }
+      return result;
+    });
+  }
 
   async pollOne(provider) {
     const status = this.status[provider.id];
