@@ -1,6 +1,7 @@
 const first = (...values) => values.find((value) => value !== undefined && value !== null && value !== "");
 
 const asText = (value) => value === undefined || value === null ? "" : String(value).trim();
+const asBoolean = (value) => value === true || value === 1 || ["true", "1", "yes", "suspended"].includes(String(value).toLowerCase());
 
 export function normalizeEvent(raw, provider) {
   if (!raw || typeof raw !== "object") return null;
@@ -44,7 +45,7 @@ export function normalizeOdds(raw, provider) {
     market,
     selection,
     odds: price,
-    suspended: Boolean(first(raw.suspended, raw.isSuspended, raw.is_suspended, false)),
+    suspended: asBoolean(first(raw.suspended, raw.isSuspended, raw.is_suspended, false)),
     observedAt
   };
 }
